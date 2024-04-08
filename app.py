@@ -1,44 +1,16 @@
-# from flask import Flask, request, abort
-# from linebot import LineBotApi, WebhookHandler
-# from linebot.exceptions import InvalidSignatureError
-# from linebot.models import MessageEvent, TextMessage, TextSendMessage
-
-# app = Flask(__name__)
-
-# # 設定 Line Bot 的 Channel Access Token 和 Channel Secret
-# line_bot_api = LineBotApi('Xt+M0+Zmy5qApFNFOPdyEFiMGUEFzKJotAr1lqLMiEO/JciPn9QFcvhfJIavvo2h0gpQEfX9Fh+l3Us+WTjzQiQP/wAS47Vv0k+79Yb87FvZeMZnCeyPSl5g0uWVRbEFpmu+/7aUAUMOgCS1PUlJqgdB04t89/1O/w1cDnyilFU=')
-# handler = WebhookHandler('6b58c64686c1ccfef156a6de588d2aac')
-
-# # 定義 Webhook 路由
-# @app.route("/callback", methods=['POST'])
-# def callback():
-#     signature = request.headers['X-Line-Signature']
-#     body = request.get_data(as_text=True)
-#     app.logger.info("Request body: " + body)
-
-#     try:
-#         handler.handle(body, signature)
-#     except InvalidSignatureError:
-#         abort(400)
-
-#     return 'OK'
-
-# # 處理收到的文字消息
-# @handler.add(MessageEvent, message=TextMessage)
-# def handle_message(event):
-#     text = event.message.text
-#     reply_text = f"你說了：{text}"
-#     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text))
-
-# if __name__ == "__main__":
-#     app.run()
-
-
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 import requests
+import paho.mqtt.client as mqtt
+import logging
+
+# 設置日誌級別為 DEBUG，可以輸出所有日誌訊息
+logging.basicConfig(level=logging.DEBUG)
+
+# 使用 logger 物件來進行日誌紀錄
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -46,6 +18,10 @@ app = Flask(__name__)
 CHANNEL_ACCESS_TOKEN = 'Xt+M0+Zmy5qApFNFOPdyEFiMGUEFzKJotAr1lqLMiEO/JciPn9QFcvhfJIavvo2h0gpQEfX9Fh+l3Us+WTjzQiQP/wAS47Vv0k+79Yb87FvZeMZnCeyPSl5g0uWVRbEFpmu+/7aUAUMOgCS1PUlJqgdB04t89/1O/w1cDnyilFU='
 line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler('6b58c64686c1ccfef156a6de588d2aac')
+
+# # MQTT 設定
+MQTT_BROKER = 'mqtt://mqtt-dashboard.com'
+MQTT_TOPIC = 'TestMQTT_microbit'
 
 # 定義 Webhook 路由
 @app.route("/callback", methods=['POST'])
@@ -67,6 +43,7 @@ def handle_message(event):
     user_message = event.message.text
     reply_token = event.reply_token
     user_id = event.source.user_id
+    logger.info(user_id)
 
     send_line_message(user_id)
 
@@ -78,6 +55,8 @@ def handle_message(event):
         push_line_bot_message('台灣大寬平客服:02 4066 5357', reply_token)
     elif any(keyword in user_message for keyword in ['包裹', '掛號', '信件']):
         push_line_bot_message('請至一樓找管理室洽詢~', reply_token)
+    elif any(keyword in user_message for keyword in ['id']):
+        push_line_bot_message(user_id, reply_token)
     elif '開燈' in user_message:
         send_mqtt_command_to_broker('on')
         push_line_bot_message('已開', reply_token)
@@ -187,6 +166,14 @@ def reply_image(reply_token, image_url):
 def get_image_url(bucket_name, image_name):
     return f'https://storage.googleapis.com/{bucket_name}/{image_name}'
 
+
+# 新增 MQTT 訂閱處理程序，當接收到 MQTT 訊息時轉發給 Line Bot
+def on_message(client, userdata, message):
+    mqtt_message = message.payload.decode()
+    user_id = 'Your_User_ID'  # 請替換成您的 Line 使用者 ID
+    push_line_bot_message(mqtt_message, user_id)
+
+
 if __name__ == "__main__":
     app.run()
 
@@ -194,7 +181,7 @@ if __name__ == "__main__":
 
 # mqtt
     
-    
+
 # from flask import Flask, request, abort
 # from linebot import LineBotApi, WebhookHandler
 # from linebot.exceptions import InvalidSignatureError
