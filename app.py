@@ -30,7 +30,8 @@ def on_message(client, userdata, message):
     push_line_bot_message(mqtt_message, user_id)
 
 # 創建 MQTT 客戶端
-mqtt_client = mqtt.Client()
+# mqtt_client = mqtt.Client()
+mqtt_client = mqtt.Client(protocol=mqtt.MQTTv311)
 
 # 設定訂閱處理程序
 mqtt_client.on_message = on_message
