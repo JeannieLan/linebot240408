@@ -20,7 +20,7 @@ line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler('6b58c64686c1ccfef156a6de588d2aac')
 
 # # MQTT 設定
-MQTT_BROKER = 'mqtt-dashboard.com'
+MQTT_BROKER = 'mqtt://mqtt-dashboard.com'
 MQTT_BROKER_PORT = 1883
 MQTT_TOPIC = 'TestMQTT_microbit'
 
@@ -45,7 +45,7 @@ mqtt_client = mqtt.Client(callback_api_version=mqtt.MQTTv311)
 mqtt_client.on_message = on_message
 
 # 連接到 MQTT 代理
-mqtt_client.connect(MQTT_BROKER,MQTT_BROKER_PORT,60)
+mqtt_client.connect(MQTT_BROKER)
 
 # 訂閱 MQTT 主題
 mqtt_client.subscribe(MQTT_TOPIC)
