@@ -39,6 +39,7 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 import requests
+import paho.mqtt.client as mqtt
 
 app = Flask(__name__)
 
@@ -46,6 +47,10 @@ app = Flask(__name__)
 CHANNEL_ACCESS_TOKEN = 'Xt+M0+Zmy5qApFNFOPdyEFiMGUEFzKJotAr1lqLMiEO/JciPn9QFcvhfJIavvo2h0gpQEfX9Fh+l3Us+WTjzQiQP/wAS47Vv0k+79Yb87FvZeMZnCeyPSl5g0uWVRbEFpmu+/7aUAUMOgCS1PUlJqgdB04t89/1O/w1cDnyilFU='
 line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler('6b58c64686c1ccfef156a6de588d2aac')
+
+# MQTT 設定
+MQTT_BROKER = 'mqtt-dashboard.com'
+MQTT_TOPIC = 'TestMQTT_microbit'
 
 # 定義 Webhook 路由
 @app.route("/callback", methods=['POST'])
@@ -139,20 +144,10 @@ def send_line_message(user_id):
     requests.post(url, **options)
 
 def send_mqtt_command_to_broker(mqtt_command):
-    url = 'https://coffee-lbm2dvajia-de.a.run.app'
-    line_options = {
-        'headers': {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN
-        },
-        'json': {'command': mqtt_command}
-    }
-
-    try:
-        response = requests.post(url, **line_options)
-        print('MQTT Command sent:', response.json())
-    except Exception as e:
-        print('Error sending MQTT command:', e)
+    client = mqtt.Client()
+    client.connect(MQTT_BROKER)
+    client.publish(MQTT_TOPIC, mqtt_command)
+    client.disconnect()
 
 def reply_image(reply_token, image_url):
     payload = {
@@ -173,3 +168,4 @@ def get_image_url(bucket_name, image_name):
 
 if __name__ == "__main__":
     app.run()
+
