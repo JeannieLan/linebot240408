@@ -24,7 +24,7 @@ handler = WebhookHandler('6b58c64686c1ccfef156a6de588d2aac')
 MQTT_BROKER = 'mqtt://mqtt-dashboard.com'
 MQTT_TOPIC = 'TestMQTT_microbit'
 
-# 新增 MQTT 訂閱處理程序，當接收到 MQTT 訊息時轉發給 Line Bot
+# 定義 MQTT 訂閱處理函數
 def on_message(client, userdata, message):
     mqtt_message = message.payload.decode()
     user_id = 'U0cde5459f527d6da0736b2a0181426d1'  # 請替換成您的 Line 使用者 ID
@@ -33,20 +33,17 @@ def on_message(client, userdata, message):
 # 創建 MQTT 客戶端
 mqtt_client = mqtt.Client()
 
-# 設置 TLS 參數，包括協議版本
-mqtt_client.tls_set(protocol=mqtt.MQTTv311)
-
-# 設定訂閱處理程序
+# 設置 MQTT 訂閱處理函數
 mqtt_client.on_message = on_message
 
-# 連接到 MQTT Broker
+# 連接到 MQTT 代理
 mqtt_client.connect(MQTT_BROKER)
 
-# 設定訂閱的主題
+# 訂閱 MQTT 主題
 mqtt_client.subscribe(MQTT_TOPIC)
 
-# 開始監聽訊息
-mqtt_client.loop_start()
+# 開始循環處理訊息
+mqtt_client.loop_forever()
 
 # 定義 Webhook 路由
 @app.route("/callback", methods=['POST'])
