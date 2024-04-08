@@ -192,7 +192,9 @@ if __name__ == "__main__":
 
 
 
-//mqtt
+# mqtt
+    
+    
 # from flask import Flask, request, abort
 # from linebot import LineBotApi, WebhookHandler
 # from linebot.exceptions import InvalidSignatureError
