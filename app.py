@@ -170,7 +170,7 @@ def get_image_url(bucket_name, image_name):
 # 新增 MQTT 訂閱處理程序，當接收到 MQTT 訊息時轉發給 Line Bot
 def on_message(client, userdata, message):
     mqtt_message = message.payload.decode()
-    user_id = 'Your_User_ID'  # 請替換成您的 Line 使用者 ID
+    user_id = 'U0cde5459f527d6da0736b2a0181426d1'  # 請替換成您的 Line 使用者 ID
     push_line_bot_message(mqtt_message, user_id)
 
 
