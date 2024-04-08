@@ -44,7 +44,8 @@ def send_mqtttoline(message):
         print("Failed to send message to Line:", e)
 
 # 創建 MQTT 客戶端
-mqtt_client = mqtt.Client(callback_api_version=mqtt.MQTTv311)  # 或者使用 MQTTv5
+mqtt_client = mqtt.Client(callback_api_version=mqtt.MQTTv5)
+  # 或者使用 MQTTv5
 
 
 # 設置連接後的回調函數
