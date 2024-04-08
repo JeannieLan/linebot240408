@@ -22,22 +22,30 @@ handler = WebhookHandler('6b58c64686c1ccfef156a6de588d2aac')
 
 # # MQTT 設定
 MQTT_BROKER = 'mqtt://mqtt-dashboard.com'
+MQTT_BROKER_PORT = 1883
 MQTT_TOPIC = 'TestMQTT_microbit'
 
 # 定義 MQTT 訂閱處理函數
 def on_message(client, userdata, message):
-    mqtt_message = message.payload.decode()
+    mqtt_message = message.payload.decode('utf-8')
     user_id = 'U0cde5459f527d6da0736b2a0181426d1'  # 請替換成您的 Line 使用者 ID
-    push_line_bot_message(mqtt_message, user_id)
+    send_mqtttoline(message)  # 发送消息到Line
+
+# 发送消息到Line
+def send_mqtttoline(message):
+    try:
+        line_bot_api.push_message('U0cde5459f527d6da0736b2a0181426d1', TextSendMessage(text=message))
+    except Exception as e:
+        print("Failed to send message to Line:", e)
 
 # 創建 MQTT 客戶端
-mqtt_client = mqtt.Client(client_id="clientId-9JU1Qt05g1")
+mqtt_client = mqtt.Client()
 
 # 設置 MQTT 訂閱處理函數
 mqtt_client.on_message = on_message
 
 # 連接到 MQTT 代理
-mqtt_client.connect(MQTT_BROKER)
+mqtt_client.connect(MQTT_BROKER,MQTT_BROKER_PORT,60)
 
 # 訂閱 MQTT 主題
 mqtt_client.subscribe(MQTT_TOPIC)
