@@ -5,6 +5,7 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 import requests
 import paho.mqtt.client as mqtt
 import logging
+import paho.mqtt.client as mqtt
 
 # 設置日誌級別為 DEBUG，可以輸出所有日誌訊息
 logging.basicConfig(level=logging.DEBUG)
@@ -30,8 +31,10 @@ def on_message(client, userdata, message):
     push_line_bot_message(mqtt_message, user_id)
 
 # 創建 MQTT 客戶端
-# mqtt_client = mqtt.Client()
-mqtt_client = mqtt.Client(protocol=mqtt.MQTTv311)
+mqtt_client = mqtt.Client()
+
+# 設置 TLS 參數，包括協議版本
+mqtt_client.tls_set(protocol=mqtt.MQTTv311)
 
 # 設定訂閱處理程序
 mqtt_client.on_message = on_message
