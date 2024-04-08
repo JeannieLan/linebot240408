@@ -22,6 +22,13 @@ handler = WebhookHandler('6b58c64686c1ccfef156a6de588d2aac')
 # # MQTT 設定
 MQTT_BROKER = 'mqtt://mqtt-dashboard.com'
 MQTT_TOPIC = 'TestMQTT_microbit'
+
+# 新增 MQTT 訂閱處理程序，當接收到 MQTT 訊息時轉發給 Line Bot
+def on_message(client, userdata, message):
+    mqtt_message = message.payload.decode()
+    user_id = 'U0cde5459f527d6da0736b2a0181426d1'  # 請替換成您的 Line 使用者 ID
+    push_line_bot_message(mqtt_message, user_id)
+
 # 創建 MQTT 客戶端
 mqtt_client = mqtt.Client()
 
@@ -181,11 +188,6 @@ def get_image_url(bucket_name, image_name):
     return f'https://storage.googleapis.com/{bucket_name}/{image_name}'
 
 
-# 新增 MQTT 訂閱處理程序，當接收到 MQTT 訊息時轉發給 Line Bot
-def on_message(client, userdata, message):
-    mqtt_message = message.payload.decode()
-    user_id = 'U0cde5459f527d6da0736b2a0181426d1'  # 請替換成您的 Line 使用者 ID
-    push_line_bot_message(mqtt_message, user_id)
 
 
 if __name__ == "__main__":
