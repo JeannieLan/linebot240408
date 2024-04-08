@@ -49,7 +49,7 @@ line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler('6b58c64686c1ccfef156a6de588d2aac')
 
 # MQTT 設定
-MQTT_BROKER = 'mqtt-dashboard.com'
+MQTT_BROKER = 'mqtt://mqtt-dashboard.com'
 MQTT_TOPIC = 'TestMQTT_microbit'
 
 # 定義 Webhook 路由
@@ -148,6 +148,22 @@ def send_mqtt_command_to_broker(mqtt_command):
     client.connect(MQTT_BROKER)
     client.publish(MQTT_TOPIC, mqtt_command)
     client.disconnect()
+
+def send_line(payload):
+    url = 'https://api.line.me/v2/bot/message/reply'
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN
+    }
+
+    options = {
+        'method': 'post',
+        'headers': headers,
+        'json': payload
+    }
+
+    requests.post(url, **options)
+
 
 def reply_image(reply_token, image_url):
     payload = {
