@@ -24,6 +24,13 @@ MQTT_BROKER = 'mqtt://mqtt-dashboard.com'
 MQTT_BROKER_PORT = 1883
 MQTT_TOPIC = 'TestMQTT_microbit'
 
+# 連接到 MQTT 服務器時將執行的回調函數
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code " + str(rc))
+    # 訂閱可以在 on_connet 中設置，如果連接丟失
+    # 或重連會重新訂閱
+    client.subscribe(MQTT_TOPIC)
+
 # 定義 MQTT 訂閱處理函數
 def on_message(client, userdata, message):
     mqtt_message = message.payload.decode('utf-8')
@@ -38,8 +45,10 @@ def send_mqtttoline(message):
         print("Failed to send message to Line:", e)
 
 # 創建 MQTT 客戶端
-mqtt_client = mqtt.Client(callback_api_version=mqtt.MQTTv5)
+mqtt_client = mqtt.Client()
 
+# 設置連接後的回調函數
+mqtt_client.on_connect = on_connect
 
 # 設置 MQTT 訂閱處理函數
 mqtt_client.on_message = on_message
