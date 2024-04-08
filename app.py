@@ -5,7 +5,6 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 import requests
 import paho.mqtt.client as mqtt
 import logging
-import paho.mqtt.client as mqtt
 
 # 設置日誌級別為 DEBUG，可以輸出所有日誌訊息
 logging.basicConfig(level=logging.DEBUG)
@@ -21,7 +20,7 @@ line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler('6b58c64686c1ccfef156a6de588d2aac')
 
 # # MQTT 設定
-MQTT_BROKER = 'mqtt://mqtt-dashboard.com'
+MQTT_BROKER = 'mqtt-dashboard.com'
 MQTT_BROKER_PORT = 1883
 MQTT_TOPIC = 'TestMQTT_microbit'
 
@@ -29,7 +28,7 @@ MQTT_TOPIC = 'TestMQTT_microbit'
 def on_message(client, userdata, message):
     mqtt_message = message.payload.decode('utf-8')
     user_id = 'U0cde5459f527d6da0736b2a0181426d1'  # 請替換成您的 Line 使用者 ID
-    send_mqtttoline(message)  # 发送消息到Line
+    send_mqtttoline(mqtt_message)  # 发送消息到Line
 
 # 发送消息到Line
 def send_mqtttoline(message):
