@@ -20,9 +20,8 @@ line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler('6b58c64686c1ccfef156a6de588d2aac')
 
 # # MQTT 設定
-MQTT_BROKER = 'mqtt://mqtt-dashboard.com'
-MQTT_BROKER_PORT = 1883
-MQTT_TOPIC = 'TestMQTT_microbit'
+MQTT_BROKER = "mqtt://mqtt-dashboard.com"
+MQTT_TOPIC = "TestMQTT_microbit"
 
 # 連接到 MQTT 服務器時將執行的回調函數
 def on_connect(client, userdata, flags, rc):
