@@ -31,7 +31,10 @@ def on_message(client, userdata, message):
     push_line_bot_message(mqtt_message, user_id)
 
 # 創建 MQTT 客戶端
-mqtt_client = mqtt.Client(callback=on_message)
+mqtt_client = mqtt.Client()
+
+# 設置 MQTT 訂閱處理函數
+mqtt_client.on_message = on_message
 
 # 連接到 MQTT 代理
 mqtt_client.connect(MQTT_BROKER)
