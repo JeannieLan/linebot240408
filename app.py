@@ -19,49 +19,50 @@ CHANNEL_ACCESS_TOKEN = 'Xt+M0+Zmy5qApFNFOPdyEFiMGUEFzKJotAr1lqLMiEO/JciPn9QFcvhf
 line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler('6b58c64686c1ccfef156a6de588d2aac')
 
+
 # # MQTT 設定
-MQTT_BROKER = "mqtt://mqtt-dashboard.com"
-MQTT_TOPIC = "TestMQTT_microbit"
+# MQTT_BROKER = "mqtt://mqtt-dashboard.com"
+# MQTT_TOPIC = "TestMQTT_microbit"
 
-# 連接到 MQTT 服務器時將執行的回調函數
-def on_connect(client, userdata, flags, rc):
-    print("Connected with result code " + str(rc))
-    # 訂閱可以在 on_connet 中設置，如果連接丟失
-    # 或重連會重新訂閱
-    client.subscribe(MQTT_TOPIC)
+# # 連接到 MQTT 服務器時將執行的回調函數
+# def on_connect(client, userdata, flags, rc):
+#     print("Connected with result code " + str(rc))
+#     # 訂閱可以在 on_connet 中設置，如果連接丟失
+#     # 或重連會重新訂閱
+#     client.subscribe(MQTT_TOPIC)
 
-# 定義 MQTT 訂閱處理函數
-def on_message(client, userdata, message):
-    mqtt_message = message.payload.decode('utf-8')
-    user_id = 'U0cde5459f527d6da0736b2a0181426d1'  # 請替換成您的 Line 使用者 ID
-    send_mqtttoline(mqtt_message)  # 发送消息到Line
+# # 定義 MQTT 訂閱處理函數
+# def on_message(client, userdata, message):
+#     print("Received message '" + str(message.payload) + "' on topic '" + message.topic + "'")
+#     mqtt_message = message.payload.decode('utf-8')
+#     user_id = 'U0cde5459f527d6da0736b2a0181426d1'  # 請替換成您的 Line 使用者 ID
+#     send_mqtttoline(mqtt_message)  # 发送消息到Line
 
-# 发送消息到Line
-def send_mqtttoline(message):
-    try:
-        line_bot_api.push_message('U0cde5459f527d6da0736b2a0181426d1', TextSendMessage(text=message))
-    except Exception as e:
-        print("Failed to send message to Line:", e)
+# # 发送消息到Line
+# def send_mqtttoline(message):
+#     try:
+#         line_bot_api.push_message('U0cde5459f527d6da0736b2a0181426d1', TextSendMessage(text=message))
+#     except Exception as e:
+#         print("Failed to send message to Line:", e)
 
-# 創建 MQTT 客戶端
-mqtt_client = mqtt.Client()
-  # 或者使用 MQTTv5
+# # 創建 MQTT 客戶端
+# mqtt_client = mqtt.Client()
 
 
-# 設置連接後的回調函數
-mqtt_client.on_connect = on_connect
+# # 設置連接後的回調函數
+# mqtt_client.on_connect = on_connect
 
-# 設置 MQTT 訂閱處理函數
-mqtt_client.on_message = on_message
+# # 設置 MQTT 訂閱處理函數
+# mqtt_client.on_message = on_message
 
-# 連接到 MQTT 代理
-mqtt_client.connect(MQTT_BROKER)
+# # 連接到 MQTT 代理
+# mqtt_client.connect(MQTT_BROKER)
 
-# 訂閱 MQTT 主題
-mqtt_client.subscribe(MQTT_TOPIC)
+# # 訂閱 MQTT 主題
+# mqtt_client.subscribe(MQTT_TOPIC)
 
-# 開始循環處理訊息
-mqtt_client.loop_forever()
+# # 開始循環處理訊息
+# mqtt_client.loop_forever()
 
 # 定義 Webhook 路由
 @app.route("/callback", methods=['POST'])
